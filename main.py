@@ -41,7 +41,6 @@ def get_confidence_badge(prob):
     else:
         return "🔴 Rendah", "error"
 
-
 # UI Utama
 st.title("🎬 Analisis Sentimen Film")
 st.markdown("### Ensemble Model (BernoulliNB + SVM)")
@@ -79,23 +78,17 @@ else:
     with col3:
         show_details = st.checkbox("Detail preprocessing", value=False)
 
-
-    # ============================
-    #      PROSES ANALISIS
-    # ============================
     if predict_btn:
         if input_text.strip() == "":
             st.warning("⚠️ Masukkan teks terlebih dahulu.")
         else:
-            with st.spinner("Menganalisis..."):
+            with st.spinner('Menganalisis...'):
                 try:
-                    # Preprocessing
                     stopword_remover = tools['stopword']
                     stemmer = tools['stemmer']
                     processed = preprocess_text(input_text, stopword_remover, stemmer)
                     vec = vectorizer.transform([processed])
 
-                    # Prediksi model
                     pred_bnb = model_bnb.predict(vec)[0]
                     pred_svm = model_svm.predict(vec)[0]
                     pred_ensemble = model_ensemble.predict(vec)[0]
@@ -116,17 +109,11 @@ else:
 
                     st.info(f"**Tingkat Keyakinan:** {conf_text} ({max_prob:.1f}%)")
 
-
-                    # ========================
-                    #     Probabilitas
-                    # ========================
+                    # Probabilitas
                     st.write("**📊 Probabilitas:**")
-
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.metric("Negatif", f"{prob_ensemble[0] * 100:.1f}%")
-                    with col2:
-                        st.metric("Positif", f"{prob_ensemble[1] * 100:.1f}%")
+                        st.metric("Negatif", f"{prob_ensemble[0]*100:.1f}%")
 
                 except Exception as e:
-                    st.error(f"Terjadi error saat analisis: {e}")
+                    st.error(f"❌ Terjadi kesalahan saat memproses: {e}")
